@@ -4,7 +4,7 @@ import {
   likeCard,
   imageModal,
   addCardToPagePrepend,
-} from "./cardCreate";
+} from "./card";
 
 import { openModal, closeModal } from "./modal";
 
@@ -14,13 +14,19 @@ export const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 
 // Данные профиля
 const profileName = document.querySelector(".profile__title").textContent;
-const profileJobDescription = document.querySelector(".profile__description").textContent;
+const profileJobDescription = document.querySelector(
+  ".profile__description"
+).textContent;
 
 // Форма попапа редактирования профиля
-export const popupInputProfileForm = document.querySelector('.popup_type_edit .popup__form[name="edit-profile"]');
+export const popupInputProfileForm = document.querySelector(
+  '.popup_type_edit .popup__form[name="edit-profile"]'
+);
 // Инпуты попапа профиля
 const popupInputProfileName = document.querySelector(".popup__input_type_name");
-const popupInputProfileJobDescription = document.querySelector(".popup__input_type_description");
+const popupInputProfileJobDescription = document.querySelector(
+  ".popup__input_type_description"
+);
 // Заполнение инпутов
 popupInputProfileName.value = profileName;
 popupInputProfileJobDescription.value = profileJobDescription;
@@ -44,10 +50,16 @@ export function handleProfileFormSubmit(evt) {
 popupInputProfileForm.addEventListener("submit", handleProfileFormSubmit);
 
 // Форма попапа добавления карточки
-export const popupInputNewCardForm = document.querySelector('.popup_type_new-card .popup__form[name="new-place"]');
+export const popupInputNewCardForm = document.querySelector(
+  '.popup_type_new-card .popup__form[name="new-place"]'
+);
 // Инпуты попапа новой карточки
-const newCardNameInput = popupInputNewCardForm.querySelector(".popup__input_type_card-name");
-const newCardUrlInput = popupInputNewCardForm.querySelector(".popup__input_type_url");
+const newCardNameInput = popupInputNewCardForm.querySelector(
+  ".popup__input_type_card-name"
+);
+const newCardUrlInput = popupInputNewCardForm.querySelector(
+  ".popup__input_type_url"
+);
 
 export function handleCardFormSubmit(evt) {
   evt.preventDefault();

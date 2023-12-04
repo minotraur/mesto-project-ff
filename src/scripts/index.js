@@ -18,7 +18,7 @@ import {
   deleteCard,
   likeCard,
   imageModal,
-} from "./cardCreate";
+} from "./card";
 
 const editProfileButton = document.querySelector(".profile__edit-button");
 const addCardButton = document.querySelector(".profile__add-button");
