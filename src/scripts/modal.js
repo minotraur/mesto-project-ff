@@ -1,49 +1,53 @@
-export function openModal(element, popupElement, closeModalHandler) {
-  function openModalHandler() {
-    popupElement.classList.add("popup_is-opened");
+export function openModal(element, popupType, closeModalHandler) {
+  element.addEventListener("click", function () {
+    popupType.classList.add("popup_is-opened");
+  });
+
+  // Закрытие по нажатию на кнопку с крестиком
+  const closePopupButton = popupType.querySelector(".popup__close");
+  if (closePopupButton) {
+    closePopupButton.addEventListener("click", function () {
+      closeModalHandler(popupType);
+    });
   }
 
-  function closeModalHandler() {
-    popupElement.classList.remove("popup_is-opened");
-    document.removeEventListener("keydown", pressEscKey);
-    popupElement.removeEventListener("click", closeModalHandler);
-  }
-
-  function pressOverlayClick(event) {
-    if (event.target === popupElement) {
-      closeModalHandler();
+  // Закрытие по нажатию вне области попапа
+  const pressOverlayClick = function (event) {
+    if (event.target === popupType) {
+      closeModalHandler(popupType);
     }
-  }
+  };
+  popupType.addEventListener("click", pressOverlayClick);
 
-  function pressEscKey(event) {
+  // Закрытие по нажатию на Escape
+  const pressEscKey = function (event) {
     if (event.key === "Escape") {
-      closeModalHandler();
+      closeModalHandler(popupType);
     }
-  }
-
-  element.addEventListener("click", openModalHandler);
-
-  const closeModalButton = popupElement.querySelector(".popup__close");
-  if (closeModalButton) {
-    closeModalButton.addEventListener("click", closeModalHandler);
-  }
-
-  popupElement.addEventListener("click", pressOverlayClick);
+  };
   document.addEventListener("keydown", pressEscKey);
 
-  if (element.classList.contains("card__image")) {
-    const { src: imageLink, alt: imageName } = element;
-    const imageElement = popupElement.querySelector(".popup__image");
-    const imageCaption = popupElement.querySelector(".popup__caption");
-
-    imageElement.src = imageLink;
-    imageCaption.textContent = imageName;
-    popupElement.classList.add("popup__image");
+  // Закрытие по нажатию на кнопку сохранения
+  const saveEditProfileButton = popupType.querySelector(".popup__button");
+  if (saveEditProfileButton) {
+    saveEditProfileButton.addEventListener("click", function () {
+      closeModalHandler(popupType);
+    });
   }
 
-  popupElement.classList.add("popup_is-animated");
+  if (element.classList.contains("card__image")) {
+    const imageLink = element.src;
+    const imageName = element.alt;
+    const imageElement = popupType.querySelector(".popup__image");
+    const imageCaption = popupType.querySelector(".popup__caption");
+    imageElement.src = imageLink;
+    imageCaption.textContent = imageName;
+    popupType.classList.add("popup__image");
+  }
+
+  popupType.classList.add("popup_is-animated");
 }
 
-export function closeModal(popupElement) {
-  popupElement.classList.remove("popup_is-opened");
+export function closeModal(popupType) {
+  popupType.classList.remove("popup_is-opened");
 }

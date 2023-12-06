@@ -1,11 +1,6 @@
 import { openModal, closeModal } from "./modal";
-
 // Темплейт карточки
 const cardTemplate = document.querySelector("#card-template").content;
-
-// DOM узлы
-const content = document.querySelector(".content");
-const places = content.querySelector(".places__list");
 
 // Функция создания карточки
 export function createCardElement(
@@ -13,40 +8,33 @@ export function createCardElement(
   deleteCardHandler,
   likeCardHandler,
   imageModalHandler,
-  popupImage
+  popupTypeImage
 ) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 
+  const cardImage = cardElement.querySelector(".card__image");
+
   cardElement.querySelector(".card__title").textContent = card.name;
-  cardElement.querySelector(".card__image").src = card.link;
-  cardElement.querySelector(".card__image").alt = card.name;
+  cardImage.src = card.link;
+  cardImage.alt = card.name;
 
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
   const cardLikeButton = cardElement.querySelector(".card__like-button");
-  const cardImage = cardElement.querySelector(".card__image");
 
   // Слушатель на удаление карточки
   cardDeleteButton.addEventListener("click", deleteCardHandler);
+
   // Слушатель на лайк
   cardLikeButton.addEventListener("click", function () {
     likeCardHandler(cardLikeButton);
   });
+
   // Слушатель на нажатие по карточке
   cardImage.addEventListener("click", function () {
-    imageModalHandler(cardImage, popupImage);
+    imageModalHandler(cardImage, popupTypeImage);
   });
 
   return cardElement;
-}
-
-// Функция добавления карточки на страницу в конец
-export function addCardToPage(cardElement) {
-  places.append(cardElement);
-}
-
-// Функция добавления карточки на страницу в начало
-export function addCardToPagePrepend(cardElement) {
-  places.prepend(cardElement);
 }
 
 // Функция удаления карточки
@@ -57,10 +45,11 @@ export function deleteCard(event) {
   }
 }
 
+// Функция лайка карточки
 export function likeCard(likeButton) {
   likeButton.classList.toggle("card__like-button_is-active");
 }
 
-export function imageModal(cardImage, popupImage) {
-  openModal(cardImage, popupImage, closeModal);
+export function imagePopup(cardImage, popupTypeImage) {
+  openModal(cardImage, popupTypeImage, closeModal);
 }
