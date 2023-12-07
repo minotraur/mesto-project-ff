@@ -1,9 +1,10 @@
 export function openModal(element, popupType, closeModalHandler) {
   element.addEventListener("click", function () {
     popupType.classList.add("popup_is-opened");
+    addEscListener(() => closeModalHandler(popupType));
+    addOverlayClickListener(popupType, () => closeModalHandler(popupType));
   });
 
-  // Закрытие по нажатию на кнопку с крестиком
   const closePopupButton = popupType.querySelector(".popup__close");
   if (closePopupButton) {
     closePopupButton.addEventListener("click", function () {
@@ -11,26 +12,9 @@ export function openModal(element, popupType, closeModalHandler) {
     });
   }
 
-  // Закрытие по нажатию вне области попапа
-  const pressOverlayClick = function (event) {
-    if (event.target === popupType) {
-      closeModalHandler(popupType);
-    }
-  };
-  popupType.addEventListener("click", pressOverlayClick);
-
-  // Закрытие по нажатию на Escape
-  const pressEscKey = function (event) {
-    if (event.key === "Escape") {
-      closeModalHandler(popupType);
-    }
-  };
-  document.addEventListener("keydown", pressEscKey);
-
-  // Закрытие по нажатию на кнопку сохранения
-  const saveEditProfileButton = popupType.querySelector(".popup__button");
-  if (saveEditProfileButton) {
-    saveEditProfileButton.addEventListener("click", function () {
+  const saveButton = popupType.querySelector(".popup__button-save");
+  if (saveButton) {
+    saveButton.addEventListener("click", function () {
       closeModalHandler(popupType);
     });
   }
@@ -50,4 +34,27 @@ export function openModal(element, popupType, closeModalHandler) {
 
 export function closeModal(popupType) {
   popupType.classList.remove("popup_is-opened");
+  removeEscListener(() => closeModalHandler(popupType));
+}
+
+function addEscListener(callback) {
+  const pressEscKey = function (event) {
+    if (event.key === "Escape") {
+      callback();
+    }
+  };
+  document.addEventListener("keydown", pressEscKey);
+}
+
+function removeEscListener(callback) {
+  document.removeEventListener("keydown", callback);
+}
+
+function addOverlayClickListener(popupType, callback) {
+  const pressOverlayClick = function (event) {
+    if (event.target === popupType) {
+      callback();
+    }
+  };
+  popupType.addEventListener("click", pressOverlayClick);
 }

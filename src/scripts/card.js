@@ -1,4 +1,3 @@
-import { openModal, closeModal } from "./modal";
 // Темплейт карточки
 const cardTemplate = document.querySelector("#card-template").content;
 
@@ -7,8 +6,9 @@ export function createCardElement(
   card,
   deleteCardHandler,
   likeCardHandler,
-  imageModalHandler,
-  popupTypeImage
+  openModalHandler,
+  popupTypeImage,
+  closeModalHandler
 ) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 
@@ -29,9 +29,9 @@ export function createCardElement(
     likeCardHandler(cardLikeButton);
   });
 
-  // Слушатель на нажатие по карточке
+  // Новый слушатель на открытие модального окна
   cardImage.addEventListener("click", function () {
-    imageModalHandler(cardImage, popupTypeImage);
+    openModalHandler(cardImage, popupTypeImage, closeModalHandler);
   });
 
   return cardElement;
@@ -48,8 +48,4 @@ export function deleteCard(event) {
 // Функция лайка карточки
 export function likeCard(likeButton) {
   likeButton.classList.toggle("card__like-button_is-active");
-}
-
-export function imagePopup(cardImage, popupTypeImage) {
-  openModal(cardImage, popupTypeImage, closeModal);
 }

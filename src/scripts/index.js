@@ -1,8 +1,6 @@
 import "../pages/index.css";
 import { initialCards } from "./cards";
-
-import { createCardElement, deleteCard, likeCard, imagePopup } from "./card";
-
+import { createCardElement, deleteCard, likeCard } from "./card";
 import { openModal, closeModal } from "./modal";
 
 // DOM узлы
@@ -42,7 +40,14 @@ const newCardUrlInput = popupInputNewCardForm.querySelector(
 
 // Создание существующих карточек
 initialCards.forEach((cardElement) => {
-  const newCard = createCardElement(cardElement, deleteCard, likeCard, imagePopup, popupTypeImage);
+  const newCard = createCardElement(
+    cardElement,
+    deleteCard,
+    likeCard,
+    openModal,
+    popupTypeImage,
+    closeModal
+  );
   places.append(newCard);
 });
 
@@ -67,7 +72,6 @@ export function openProfileEditModal() {
   popupInputProfileJobDescription.value = profileJobDescription;
 }
 
-// Call openProfileEditModal when opening the profile edit popup
 editProfileButton.addEventListener("click", openProfileEditModal);
 
 export function handleProfileFormSubmit(evt) {
@@ -98,11 +102,15 @@ export function handleCardFormSubmit(evt) {
     link: newCardUrlValue,
   };
 
-  const cardElement = createCardElement(cardData, deleteCard, likeCard, imagePopup, popupTypeImage);
+  const cardElement = createCardElement(
+    cardData,
+    deleteCard,
+    likeCard,
+    openModal,
+    popupTypeImage,
+    closeModal
+  );
   places.prepend(cardElement);
-
-  const cardImage = cardElement.querySelector(".card__image");
-  openModal(cardImage, popupTypeImage, closeModal);
 
   closeModal(popupTypeNewCard);
   popupInputNewCardForm.reset();
