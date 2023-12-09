@@ -1,60 +1,49 @@
-export function openModal(element, popupType, closeModalHandler) {
-  element.addEventListener("click", function () {
-    popupType.classList.add("popup_is-opened");
-    addEscListener(() => closeModalHandler(popupType));
-    addOverlayClickListener(popupType, () => closeModalHandler(popupType));
-  });
+let openedPopup = null;
 
-  const closePopupButton = popupType.querySelector(".popup__close");
-  if (closePopupButton) {
-    closePopupButton.addEventListener("click", function () {
-      closeModalHandler(popupType);
-    });
-  }
+export function openModal(popup) {
+  // Добавляем класс "popup_is-animated" для запуска анимации.
+  popup.classList.add("popup_is-animated");
+  
+  // setTimeout используется для того, чтобы дать браузеру отрисовать анимацию перед добавлением класса "popup_is-opened".
+  setTimeout(() => {
+    popup.classList.add("popup_is-opened");
+    document.addEventListener("keydown", closeByEsc);
+    document.addEventListener("click", closeClickOverlay);
 
-  const saveButton = popupType.querySelector(".popup__button-save");
-  if (saveButton) {
-    saveButton.addEventListener("click", function () {
-      closeModalHandler(popupType);
-    });
-  }
+    const closePopupButton = popup.querySelector(".popup__close");
 
-  if (element.classList.contains("card__image")) {
-    const imageLink = element.src;
-    const imageName = element.alt;
-    const imageElement = popupType.querySelector(".popup__image");
-    const imageCaption = popupType.querySelector(".popup__caption");
-    imageElement.src = imageLink;
-    imageCaption.textContent = imageName;
-    popupType.classList.add("popup__image");
-  }
-
-  popupType.classList.add("popup_is-animated");
-}
-
-export function closeModal(popupType) {
-  popupType.classList.remove("popup_is-opened");
-  removeEscListener(() => closeModalHandler(popupType));
-}
-
-function addEscListener(callback) {
-  const pressEscKey = function (event) {
-    if (event.key === "Escape") {
-      callback();
+    // Проверяем, существует ли кнопка закрытия перед добавлением обработчика события.
+    if (closePopupButton) {
+      closePopupButton.addEventListener("click", closeButton);
     }
-  };
-  document.addEventListener("keydown", pressEscKey);
+
+    openedPopup = popup;
+  }, 0);
 }
 
-function removeEscListener(callback) {
-  document.removeEventListener("keydown", callback);
+export function closePopup(popup) {
+  popup.classList.remove("popup_is-opened");
+  document.removeEventListener("keydown", closeByEsc);
 }
 
-function addOverlayClickListener(popupType, callback) {
-  const pressOverlayClick = function (event) {
-    if (event.target === popupType) {
-      callback();
-    }
-  };
-  popupType.addEventListener("click", pressOverlayClick);
+function closeByEsc(evt) {
+  // Проверяем, что событие вызвано нажатием клавиши Esc.
+  if (evt.key === "Escape") {
+    closePopup(openedPopup);
+  }
+}
+
+function closeClickOverlay(evt) {
+  // Проверяем, что клик произошел по самому оверлею, а не его дочернему элементу.
+  if (evt.target === openedPopup) {
+    closePopup(openedPopup);
+  }
+}
+
+function closeButton() {
+  const closeButton = openedPopup.querySelector(".popup__close");
+  // Проверяем, существует ли кнопка закрытия перед вызовом closePopup.
+  if (closeButton) {
+    closePopup(openedPopup);
+  }
 }
