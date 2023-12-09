@@ -1,24 +1,18 @@
-let openedPopup = null;
-
 export function openModal(popup) {
+  // Открываем модальное окно, добавляя класс "popup_is-opened".
+  popup.classList.add("popup_is-opened");
+
+  // Добавляем обработчики событий для закрытия модального окна.
+  document.addEventListener("keydown", closeByEsc);
+  popup.addEventListener("click", closeClickOverlay);
+
+  // Добавляем обработчик события для закрытия по клику на кнопку закрытия.
+  popup
+    .querySelector(".popup__close")
+    .addEventListener("click", () => closePopup(popup));
+
   // Добавляем класс "popup_is-animated" для запуска анимации.
   popup.classList.add("popup_is-animated");
-  
-  // setTimeout используется для того, чтобы дать браузеру отрисовать анимацию перед добавлением класса "popup_is-opened".
-  setTimeout(() => {
-    popup.classList.add("popup_is-opened");
-    document.addEventListener("keydown", closeByEsc);
-    document.addEventListener("click", closeClickOverlay);
-
-    const closePopupButton = popup.querySelector(".popup__close");
-
-    // Проверяем, существует ли кнопка закрытия перед добавлением обработчика события.
-    if (closePopupButton) {
-      closePopupButton.addEventListener("click", closeButton);
-    }
-
-    openedPopup = popup;
-  }, 0);
 }
 
 export function closePopup(popup) {
@@ -27,6 +21,7 @@ export function closePopup(popup) {
 }
 
 function closeByEsc(evt) {
+  const openedPopup = document.querySelector(".popup_is-opened");
   // Проверяем, что событие вызвано нажатием клавиши Esc.
   if (evt.key === "Escape") {
     closePopup(openedPopup);
@@ -35,15 +30,7 @@ function closeByEsc(evt) {
 
 function closeClickOverlay(evt) {
   // Проверяем, что клик произошел по самому оверлею, а не его дочернему элементу.
-  if (evt.target === openedPopup) {
-    closePopup(openedPopup);
-  }
-}
-
-function closeButton() {
-  const closeButton = openedPopup.querySelector(".popup__close");
-  // Проверяем, существует ли кнопка закрытия перед вызовом closePopup.
-  if (closeButton) {
-    closePopup(openedPopup);
+  if (evt.target.classList.contains("popup")) {
+    closePopup(evt.target);
   }
 }

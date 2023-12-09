@@ -12,8 +12,8 @@ const editProfileButton = document.querySelector(".profile__edit-button");
 const addCardButton = document.querySelector(".profile__add-button");
 
 // Имя и описание работы
-let profileName = document.querySelector(".profile__title");
-let profileJobDescription = document.querySelector(".profile__description");
+const profileName = document.querySelector(".profile__title");
+const profileJobDescription = document.querySelector(".profile__description");
 
 // Попапы
 const popupTypeEdit = document.querySelector(".popup_type_edit");
@@ -33,13 +33,20 @@ const newCardNameInput = popupInputNewCardForm.querySelector(".popup__input_type
 const newCardUrlInput = popupInputNewCardForm.querySelector(".popup__input_type_url");
 //----------------------------------//
 
+const popupTypeImage = document.querySelector(".popup_type_image");
+const popupImage = popupTypeImage.querySelector(".popup__image");
+const popupCaption = popupTypeImage.querySelector(".popup__caption");
+
+
 // Создание существующих карточек
 initialCards.forEach((cardData) => {
-  const newCard = createCardElement(cardData, deleteCard, likeCard);
+  const newCard = createCardElement(cardData, deleteCard, likeCard, fillImageAndOpenPopup);
   places.append(newCard);
 });
 
 editProfileButton.addEventListener("click", () => {
+  popupInputProfileName.value = profileName.textContent; 
+  popupInputProfileJobDescription.value = profileJobDescription.textContent; 
   openModal(popupTypeEdit);
 });
 
@@ -47,13 +54,15 @@ addCardButton.addEventListener("click", () => {
   openModal(popupTypeNewCard);
 });
 
-export function fillEditPopup() {
-  popupInputProfileName.value = profileName.textContent;
-  popupInputProfileJobDescription.value = profileJobDescription.textContent;
-}
-editProfileButton.addEventListener("click", fillEditPopup);
+function fillImageAndOpenPopup(card) {
+  popupImage.src = card.link;
+  popupImage.alt = card.name;
+  popupCaption.textContent = card.name;
 
-export function handleProfileFormSubmit(evt) {
+  openModal(popupTypeImage)
+}
+
+function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
   profileName.textContent = popupInputProfileName.value;
@@ -64,7 +73,7 @@ export function handleProfileFormSubmit(evt) {
 }
 popupInputProfileForm.addEventListener("submit", handleProfileFormSubmit);
 
-export function handleCardFormSubmit(evt) {
+function handleCardFormSubmit(evt) {
   evt.preventDefault();
 
   const cardData = {
@@ -72,7 +81,7 @@ export function handleCardFormSubmit(evt) {
     link: newCardUrlInput.value,
   };
 
-  const cardElement = createCardElement(cardData, deleteCard, likeCard);
+  const cardElement = createCardElement(cardData, deleteCard, likeCard, fillImageAndOpenPopup);
   places.prepend(cardElement);
 
   closePopup(popupTypeNewCard);
