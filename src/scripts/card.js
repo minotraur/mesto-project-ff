@@ -6,7 +6,9 @@ export function createCardElement(
   card,
   deleteCardHandler,
   likeCardHandler,
-  fillImageAndOpenPopupHandler
+  unlikeCardHandler,
+  fillImageAndOpenPopupHandler,
+  likeCount
 ) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const cardImage = cardElement.querySelector(".card__image");
@@ -16,14 +18,32 @@ export function createCardElement(
   cardImage.alt = card.name;
 
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
+
+  if (card.owner._id === "b3d2403cd70daa5b0d061a84") {
+    cardDeleteButton.style = "display:block;";
+  } else {
+    cardDeleteButton.style = "display:none;";
+  }
+
   const cardLikeButton = cardElement.querySelector(".card__like-button");
 
+  const cardLikeCounter = cardElement.querySelector(".like-counter");
+  cardLikeCounter.textContent = likeCount;
+
   // Слушатель на удаление карточки
-  cardDeleteButton.addEventListener("click", deleteCardHandler);
+  cardDeleteButton.addEventListener("click", function () {
+    deleteCardHandler(card, event);
+  });
 
   // Слушатель на лайк
   cardLikeButton.addEventListener("click", function () {
-    likeCardHandler(cardLikeButton);
+    if (!cardLikeButton.classList.contains("card__like-button_is-active")) {
+      likeCardHandler(card, event);
+      cardLikeCounter.textContent = card.likes.length + 1;
+    } else {
+      unlikeCardHandler(card, event);
+      cardLikeCounter.textContent = card.likes.length;
+    }
   });
 
   // Новый слушатель на открытие модального окна
@@ -34,15 +54,7 @@ export function createCardElement(
   return cardElement;
 }
 
-// Функция удаления карточки
-export function deleteCard(event) {
-  const cardToRemove = event.target.closest(".card");
-  if (cardToRemove) {
-    cardToRemove.remove();
-  }
-}
-
-// Функция лайка карточки
-export function likeCard(likeButton) {
-  likeButton.classList.toggle("card__like-button_is-active");
-}
+// // Функция лайка карточки
+// export function likeCard(likeButton) {
+//   likeButton.classList.toggle("card__like-button_is-active");
+// }
