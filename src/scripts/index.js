@@ -78,6 +78,7 @@ getProfileInfo()
   .then((res) => {
     profileName.textContent = res.name;
     profileJobDescription.textContent = res.about;
+    popupTypeAvatarButton.style.backgroundImage = `url('${res.avatar}')`;
   })
   .catch((err) => {
     console.log(err);
@@ -154,12 +155,18 @@ function handleProfileFormSubmit(evt) {
   profileName.textContent = popupInputProfileName.value;
   profileJobDescription.textContent = popupInputProfileJobDescription.value;
 
+  const submitButton = evt.srcElement.querySelector(".popup__button");
+  renderLoading(true, submitButton);
   editProfileData(
     popupInputProfileName.value,
     popupInputProfileJobDescription.value
-  ).catch((err) => {
-    console.log(err);
-  });
+  )
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      renderLoading(false, submitButton);
+    });
 
   closePopup(popupTypeEdit);
   popupInputProfileForm.reset();
@@ -175,19 +182,26 @@ function handleCardFormSubmit(evt) {
     likes: [],
   };
 
+  const submitButton = evt.srcElement.querySelector(".popup__button");
+  renderLoading(true, submitButton);
   addNewCard(cardData.name, cardData.link)
     .then((res) => {
       const cardElement = createCardElement(
         res,
         deleteCard,
         likeCard,
+        unlikeCard,
         fillImageAndOpenPopup,
         res.likes.length
       );
+
       places.prepend(cardElement);
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      renderLoading(false, submitButton);
     });
 
   closePopup(popupTypeNewCard);
@@ -198,13 +212,17 @@ popupInputNewCardForm.addEventListener("submit", handleCardFormSubmit);
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
 
+  const submitButton = evt.srcElement.querySelector(".popup__button");
+  renderLoading(true, submitButton);
   changeAvatar(popupAvatarUrl.value)
     .then((res) => {
-      console.log(res);
-      popupTypeAvatarButton.src = res.avatar;
+      popupTypeAvatarButton.style.backgroundImage = `url('${res.avatar}')`;
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      renderLoading(false, submitButton);
     });
 
   closePopup(popupTypeAvatarEdit);
@@ -213,3 +231,11 @@ function handleAvatarFormSubmit(evt) {
 popupAvatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
 enableValidation(validationConfig);
+
+function renderLoading(isLoading, submitButton) {
+  if (isLoading) {
+    submitButton.textContent = "Сохранение...";
+  } else {
+    submitButton.textContent = "Сохранить";
+  }
+}

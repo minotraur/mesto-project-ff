@@ -10,6 +10,7 @@ export function createCardElement(
   fillImageAndOpenPopupHandler,
   likeCount
 ) {
+  console.log(card);
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const cardImage = cardElement.querySelector(".card__image");
 
