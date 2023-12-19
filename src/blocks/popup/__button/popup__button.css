@@ -19,10 +19,11 @@
   cursor: pointer;
 }
 
-.popup__button_disabled {
+.popup__button.popup__button_disabled {
   color: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.3);
-  background-color: white;
+  background: white;
+  cursor: default;
 }
 
 @media screen and (max-width: 568px) {

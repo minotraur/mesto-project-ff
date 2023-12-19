@@ -6,24 +6,36 @@ export function openModal(popup) {
   document.addEventListener("keydown", closeByEsc);
   popup.addEventListener("click", closeClickOverlay);
 
+  // Сохраняем ссылку на функцию обработчика
+  const closePopupHandler = () => closePopup(popup);
+
   // Добавляем обработчик события для закрытия по клику на кнопку закрытия.
   popup
     .querySelector(".popup__close")
-    .addEventListener("click", () => closePopup(popup));
+    .addEventListener("click", closePopupHandler);
 
   // Добавляем класс "popup_is-animated" для запуска анимации.
   popup.classList.add("popup_is-animated");
+
+  // Сохраняем ссылку на функцию обработчика в свойстве объекта popup
+  popup.closePopupHandler = closePopupHandler;
 }
 
 export function closePopup(popup) {
   popup.classList.remove("popup_is-opened");
   document.removeEventListener("keydown", closeByEsc);
+  popup.removeEventListener("click", closeClickOverlay);
+
+  // Удаляем обработчик события по сохраненной ссылке
+  popup
+    .querySelector(".popup__close")
+    .removeEventListener("click", popup.closePopupHandler);
 }
 
 function closeByEsc(evt) {
-  const openedPopup = document.querySelector(".popup_is-opened");
   // Проверяем, что событие вызвано нажатием клавиши Esc.
   if (evt.key === "Escape") {
+    const openedPopup = document.querySelector(".popup_is-opened");
     closePopup(openedPopup);
   }
 }

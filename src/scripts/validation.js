@@ -19,11 +19,11 @@ const hasInvalidInput = (inputList) => {
 
 const toggleButtonState = (inputList, buttonElement, validationConfig) => {
   if (hasInvalidInput(inputList)) {
-    buttonElement.disabled = true;
     buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = true;
   } else {
-    buttonElement.disabled = false;
     buttonElement.classList.remove(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = false;
   }
 };
 
@@ -83,6 +83,9 @@ const hideInputError = (formElement, inputElement, validationConfig) => {
 
 export function clearValidation(form, validationConfig) {
   const inputs = form.querySelectorAll(validationConfig.inputSelector);
+  const submitButton = form.querySelector(".popup__button");
+  submitButton.classList.add(validationConfig.inactiveButtonClass);
+  submitButton.disabled = true;
 
   inputs.forEach((inputElement) => {
     const errorElement = form.querySelector(`.${inputElement.id}-error`);
